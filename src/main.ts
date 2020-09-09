@@ -14,7 +14,7 @@ async function run() {
           `You're running a Linux VM where hardware acceleration is not available. Please consider using a macOS VM instead to take advantage of native hardware acceleration support provided by HAXM.`
         );
       } else {
-        throw new Error('Unsupported virtual machine: please use either macos or ubuntu VM.');
+        throw new Error(`${process.platform} is Unsupported virtual machine: please use either macos or ubuntu VM.`);
       }
     }
 
