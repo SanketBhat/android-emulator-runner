@@ -42,6 +42,7 @@ jobs:
       with:
         arch: x86
         profile: Nexus 6
+        api-level: 29
         avd-name: test
         emulator-options: -no-window -gpu swiftshader_indirect -no-snapshot -noaudio -no-boot-anim -camera-back none
         disable-animations: true
