@@ -26,7 +26,7 @@ export async function installAndroidSdk(apiLevel: number, target: string, arch: 
     const sdkUrl = isOnMac ? CMDLINE_TOOLS_URL_MAC : isOnWindows ? CMDLINE_TOOLS_URL_WINDOWS : CMDLINE_TOOLS_URL_LINUX;
     await io.mkdirP(`${process.env.ANDROID_HOME}/cmdline-tools`);
     await exec.exec(`curl -fo commandlinetools.zip ${sdkUrl}`);
-    await exec.exec(`unzip -q commandlinetools.zip -d ${cmdlineToolsPath}`);
+    await exec.exec(`unzip -q commandlinetools.zip -d "${cmdlineToolsPath}"`);
     await io.rmRF('commandlinetools.zip');
 
     // add paths for commandline-tools and platform-tools
