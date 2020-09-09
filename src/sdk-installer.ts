@@ -47,26 +47,51 @@ export async function installAndroidSdk(apiLevel: number, target: string, arch: 
 
   console.log('Installing latest build tools, platform tools, and platform.');
 
-  await exec.exec(`sh -c \\"sdkmanager --install 'build-tools;${BUILD_TOOLS_VERSION}' platform-tools 'platforms;android-${apiLevel}' > /dev/null"`);
-  if (emulatorBuild) {
-    console.log(`Installing emulator build ${emulatorBuild}.`);
-    await exec.exec(`curl -fo emulator.zip https://dl.google.com/android/repository/emulator-${isOnMac ? 'darwin' : 'linux'}-${emulatorBuild}.zip`);
-    await io.rmRF(`${process.env.ANDROID_HOME}/emulator`);
-    await exec.exec(`unzip -q emulator.zip -d ${process.env.ANDROID_HOME}`);
-    await io.rmRF('emulator.zip');
-  } else {
-    console.log('Installing latest emulator.');
-    await exec.exec(`sh -c \\"sdkmanager --install emulator > /dev/null"`);
-  }
-  console.log('Installing system images.');
-  await exec.exec(`sh -c \\"sdkmanager --install 'system-images;android-${apiLevel};${target};${arch}' > /dev/null"`);
+  if(!isOnWindows){
+    await exec.exec(`sh -c \\"sdkmanager --install 'build-tools;${BUILD_TOOLS_VERSION}' platform-tools 'platforms;android-${apiLevel}' > /dev/null"`);
+    if (emulatorBuild) {
+      console.log(`Installing emulator build ${emulatorBuild}.`);
+      await exec.exec(`curl -fo emulator.zip https://dl.google.com/android/repository/emulator-${isOnMac ? 'darwin' : 'linux'}-${emulatorBuild}.zip`);
+      await io.rmRF(`${process.env.ANDROID_HOME}/emulator`);
+      await exec.exec(`unzip -q emulator.zip -d ${process.env.ANDROID_HOME}`);
+      await io.rmRF('emulator.zip');
+    } else {
+      console.log('Installing latest emulator.');
+      await exec.exec(`sh -c \\"sdkmanager --install emulator > /dev/null"`);
+    }
+    console.log('Installing system images.');
+    await exec.exec(`sh -c \\"sdkmanager --install 'system-images;android-${apiLevel};${target};${arch}' > /dev/null"`);
 
-  if (ndkVersion) {
-    console.log(`Installing NDK ${ndkVersion}.`);
-    await exec.exec(`sh -c \\"sdkmanager --install 'ndk;${ndkVersion}' > /dev/null"`);
-  }
-  if (cmakeVersion) {
-    console.log(`Installing CMake ${cmakeVersion}.`);
-    await exec.exec(`sh -c \\"sdkmanager --install 'cmake;${cmakeVersion}' > /dev/null"`);
+    if (ndkVersion) {
+      console.log(`Installing NDK ${ndkVersion}.`);
+      await exec.exec(`sh -c \\"sdkmanager --install 'ndk;${ndkVersion}' > /dev/null"`);
+    }
+    if (cmakeVersion) {
+      console.log(`Installing CMake ${cmakeVersion}.`);
+      await exec.exec(`sh -c \\"sdkmanager --install 'cmake;${cmakeVersion}' > /dev/null"`);
+    }
+  }else{
+    await exec.exec(`sdkmanager --install "build-tools;${BUILD_TOOLS_VERSION}" "platform-tools" "platforms;android-${apiLevel}"`);
+    if (emulatorBuild) {
+      console.log(`Installing emulator build ${emulatorBuild}.`);
+      await exec.exec(`curl -fo emulator.zip https://dl.google.com/android/repository/emulator-${isOnMac ? 'darwin' : isOnWindows ? 'windows' : 'linux'}-${emulatorBuild}.zip`);
+      await io.rmRF(`${process.env.ANDROID_HOME}/emulator`);
+      await exec.exec(`unzip -q emulator.zip -d ${process.env.ANDROID_HOME}`);
+      await io.rmRF('emulator.zip');
+    } else {
+      console.log('Installing latest emulator.');
+      await exec.exec(`sdkmanager --install emulator`);
+    }
+    console.log('Installing system images.');
+    await exec.exec(`sdkmanager --install "system-images;android-${apiLevel};${target};${arch}"`);
+
+    if (ndkVersion) {
+      console.log(`Installing NDK ${ndkVersion}.`);
+      await exec.exec(`sdkmanager --install "ndk;${ndkVersion}"`);
+    }
+    if (cmakeVersion) {
+      console.log(`Installing CMake ${cmakeVersion}.`);
+      await exec.exec(`sdkmanager --install "cmake;${cmakeVersion}"`);
+    }
   }
 }
