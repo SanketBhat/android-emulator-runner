@@ -13,7 +13,6 @@ jobs:
     env:
       JAVA_TOOL_OPTIONS: -Xmx4g
     timeout-minutes: 15
-    strategy:
     steps:
     - name: checkout
       uses: actions/checkout@v2
