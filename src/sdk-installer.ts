@@ -6,6 +6,7 @@ import * as fs from 'fs';
 const BUILD_TOOLS_VERSION = '30.0.2';
 const CMDLINE_TOOLS_URL_MAC = 'https://dl.google.com/android/repository/commandlinetools-mac-6609375_latest.zip';
 const CMDLINE_TOOLS_URL_LINUX = 'https://dl.google.com/android/repository/commandlinetools-linux-6609375_latest.zip';
+const CMDLINE_TOOLS_URL_WINDOWS = 'https://dl.google.com/android/repository/commandlinetools-win-6609375_latest.zip';
 
 /**
  * Installs & updates the Android SDK for the macOS platform, including SDK platform for the chosen API level, latest build tools, platform tools, Android Emulator,
@@ -13,15 +14,16 @@ const CMDLINE_TOOLS_URL_LINUX = 'https://dl.google.com/android/repository/comman
  */
 export async function installAndroidSdk(apiLevel: number, target: string, arch: string, emulatorBuild?: string, ndkVersion?: string, cmakeVersion?: string): Promise<void> {
   const isOnMac = process.platform === 'darwin';
+  const isOnWindows = process.platform === 'win32';
 
-  if (!isOnMac) {
+  if (!isOnMac && !isOnWindows) {
     await exec.exec(`sh -c \\"sudo chown $USER:$USER ${process.env.ANDROID_HOME} -R`);
   }
 
   const cmdlineToolsPath = `${process.env.ANDROID_HOME}/cmdline-tools`;
   if (!fs.existsSync(cmdlineToolsPath)) {
     console.log('Installing new cmdline-tools.');
-    const sdkUrl = isOnMac ? CMDLINE_TOOLS_URL_MAC : CMDLINE_TOOLS_URL_LINUX;
+    const sdkUrl = isOnMac ? CMDLINE_TOOLS_URL_MAC : isOnWindows ?  CMDLINE_TOOLS_URL_WINDOWS : CMDLINE_TOOLS_URL_LINUX;
     await io.mkdirP(`${process.env.ANDROID_HOME}/cmdline-tools`);
     await exec.exec(`curl -fo commandlinetools.zip ${sdkUrl}`);
     await exec.exec(`unzip -q commandlinetools.zip -d ${cmdlineToolsPath}`);

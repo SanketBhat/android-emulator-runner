@@ -8,7 +8,7 @@ import { parseScript } from './script-parser';
 async function run() {
   try {
     // only support running on macOS or Linux
-    if (process.platform !== 'darwin') {
+    if (process.platform !== 'darwin' || process.platform !== 'win32') {
       if (process.platform === 'linux') {
         console.warn(`You're running a Linux VM where hardware acceleration is not available. Please consider using a macOS VM instead to take advantage of native hardware acceleration support provided by HAXM.`);
       } else {
